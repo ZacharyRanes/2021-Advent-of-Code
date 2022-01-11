@@ -1,11 +1,16 @@
-depthsArray = []
-depthIncreases = 0
+def main():
+    depths_array = []
+    depth_increases = 0
 
-with open('input', 'r') as depthFile:
-    depthsArray = depthFile.readlines()
+    with open('input', 'r', encoding="UTF-8") as depth_file:
+        depths_array = depth_file.readlines()
 
-for i in range(1, len(depthsArray)):
-    if int(depthsArray[i]) > int(depthsArray[i-1]):
-        depthIncreases += 1
+    for i in range(1, len(depths_array)):
+        if int(depths_array[i]) > int(depths_array[i-1]):
+            depth_increases += 1
 
-print(depthIncreases)
+    print(depth_increases)
+
+
+if __name__ == "__main__":
+    main()
