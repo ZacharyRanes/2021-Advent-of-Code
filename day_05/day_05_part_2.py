@@ -25,6 +25,7 @@ def line_math(input_array):
             else:
                 for i in range(y2, y1+1):
                     line_diagram[x1][i] += 1
+
         elif y1 == y2:
             if x1 <= x2:
                 for i in range(x1, x2+1):
@@ -32,6 +33,22 @@ def line_math(input_array):
             else:
                 for i in range(x2, x1+1):
                     line_diagram[i][y2] += 1
+
+        elif abs(x1 - x2) == abs(y1 - y2):
+            if x1 <= x2:
+                if y1 <= y2:
+                    for i in range(abs(x1 - x2)+1):
+                        line_diagram[x1+i][y1+i] += 1
+                else:
+                    for i in range(abs(x1 - x2)+1):
+                        line_diagram[x1+i][y1-i] += 1
+            else:
+                if y1 <= y2:
+                    for i in range(abs(x1 - x2)+1):
+                        line_diagram[x1-i][y1+i] += 1
+                else:
+                    for i in range(abs(x1 - x2)+1):
+                        line_diagram[x1-i][y1-i] += 1
 
     return line_diagram
 
