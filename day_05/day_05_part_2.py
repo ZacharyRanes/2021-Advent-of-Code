@@ -1,5 +1,5 @@
 """
-Advent of code 2021 day 5 part 1
+Advent of code 2021 day 5 part 2
 """
 
 
