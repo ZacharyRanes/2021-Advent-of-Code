@@ -5,21 +5,33 @@ Advent of code 2021 day 5 part 1
 
 def line_math(input_array):
     """
-    input array of arrays with x1,y2,x2,y2
+    input array of arrays with x1,y1,x2,y2
     """
 
-    line_diagram = [[0]*10] * 10
+    line_diagram = []
+    for _ in range(1000):
+        line_diagram.append([0] * 1000)
 
-    for a in input_array:
-        x1 = a[0]
-        x2 = a[2]
-        y1 = a[1]
-        y2 = a[3]
+    for line in input_array:
+        x1 = line[0]
+        y1 = line[1]
+        x2 = line[2]
+        y2 = line[3]
 
         if x1 == x2:
-            pass
-        if y1 == y2:
-            pass
+            if y1 <= y2:
+                for i in range(y1, y2+1):
+                    line_diagram[x1][i] += 1
+            else:
+                for i in range(y2, y1+1):
+                    line_diagram[x1][i] += 1
+        elif y1 == y2:
+            if x1 <= x2:
+                for i in range(x1, x2+1):
+                    line_diagram[i][y2] += 1
+            else:
+                for i in range(x2, x1+1):
+                    line_diagram[i][y2] += 1
 
     return line_diagram
 
@@ -40,8 +52,15 @@ def main():
 
     output_array = line_math(modded_input)
 
+    danger_areas = 0
     for line in output_array:
-        print(line)
+        for n in line:
+            if n >= 2:
+                danger_areas += 1
+
+    print(danger_areas)
+
+    # 977000 too high
 
 
 if __name__ == "__main__":
