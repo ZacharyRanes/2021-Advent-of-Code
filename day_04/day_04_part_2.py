@@ -2,6 +2,8 @@
 Advent of code 2021 day 4 part 1
 """
 
+import copy
+
 
 class BingoBoard:
     """ The Bingo game board as an object"""
@@ -47,12 +49,11 @@ class BingoBoard:
                 return True
         return False
 
-    def call_number(self, number) -> bool:
+    def call_number(self, number) -> None:
         for i in range(5):
             for j in range(5):
                 if self.game_board[i][j] == number:
                     self.space_used[i][j] = True
-        return self.has_won()
 
 
 def main():
@@ -79,15 +80,23 @@ def main():
 
     for number in array_of_calls:
         for board in array_of_boards:
-            win = board.call_number(number)
-            if win:
-                board.print_board()
-                not_called = board.sum_not_called()
-                print(f"Summed Spaces {not_called}")
-                print(f"Last called {number}")
-                print(f"Finals score {number * not_called}")
-                return
+            board.call_number(number)
 
+        # this way of removing board is not great
+        if len(array_of_boards) > 1:
+            check_array_of_calls = copy.deepcopy(array_of_boards)
+            array_of_boards = []
+            for board in check_array_of_calls:
+                if not board.has_won():
+                    array_of_boards.append(board)
+
+        elif board.has_won():
+            board.print_board()
+            not_called = board.sum_not_called()
+            print(f"Summed Spaces {not_called}")
+            print(f"Last called {number}")
+            print(f"Finals score {number * not_called}")
+            return
 
 if __name__ == "__main__":
     main()
