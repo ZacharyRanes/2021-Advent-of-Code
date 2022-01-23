@@ -2,8 +2,6 @@
 Advent of code 2021 day 4 part 1
 """
 
-import copy
-
 
 class BingoBoard:
     """ The Bingo game board as an object"""
@@ -78,25 +76,23 @@ def main():
         array_of_boards.append(BingoBoard((temp_board)))
         temp_board = []
 
+    # array to keep track of board that already won so they can be skipped
+    winning_boards = [False] * len(array_of_boards)
     for number in array_of_calls:
-        for board in array_of_boards:
-            board.call_number(number)
-
-        # this way of removing board is not great
-        if len(array_of_boards) > 1:
-            check_array_of_calls = copy.deepcopy(array_of_boards)
-            array_of_boards = []
-            for board in check_array_of_calls:
-                if not board.has_won():
-                    array_of_boards.append(board)
-
-        elif board.has_won():
-            board.print_board()
-            not_called = board.sum_not_called()
-            print(f"Summed Spaces {not_called}")
-            print(f"Last called {number}")
-            print(f"Finals score {number * not_called}")
-            return
+        for board_index, board in enumerate(array_of_boards):
+            if not winning_boards[board_index]:
+                board.call_number(number)
+                # if there is more then one board left to win keep going
+                if board.has_won() and winning_boards.count(False) > 1:
+                    winning_boards[board_index] = True
+                # only trigger when the last board to win, wins
+                elif board.has_won():
+                    board.print_board()
+                    not_called = board.sum_not_called()
+                    print(f"Summed Spaces {not_called}")
+                    print(f"Last called {number}")
+                    print(f"Finals score {number * not_called}")
+                    return
 
 if __name__ == "__main__":
     main()
