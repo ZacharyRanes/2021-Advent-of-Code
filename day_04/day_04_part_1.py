@@ -2,24 +2,33 @@
 Advent of code 2021 day 4 part 1
 """
 
+import copy
 
 class BingoBoard:
     """ The Bingo game board as an object"""
-    game_board = []
-    space_used = []
-    for _ in range(5):
-        space_used.append([False] * 5)
 
     def __init__(self, board_input):
         self.game_board = board_input
+        self.space_used = []
+        for i in range(5):
+            self.space_used.append([])
+            for _ in range(5):
+                self.space_used[i].append(False)
 
-    def print_board(self):
+    def print_board(self) -> None:
+        print("--------------------------")
         for line in self.game_board:
-            print(line)
+            for space in line:
+                print(f"| {space:^2} ",end="")
+            print("|")
+        print("--------------------------")
         for line in self.space_used:
-            print(line)
+            for space in line:
+                print(f"| {space:^2} ", end="")
+            print("|")
+        print("--------------------------")
 
-    def not_used_spaces_sum(self):
+    def sum_not_called(self) -> int:
         score = 0
         for i in range(5):
             for j in range(5):
@@ -27,7 +36,7 @@ class BingoBoard:
                     score += self.game_board[i][j]
         return(score)
 
-    def has_won(self):
+    def has_won(self) -> bool:
         for line in self.space_used:
             if line == [True, True, True, True, True]:
                 return True
@@ -39,7 +48,7 @@ class BingoBoard:
                 return True
         return False
 
-    def number_called(self, number):
+    def call_number(self, number) -> bool:
         for i in range(5):
             for j in range(5):
                 if self.game_board[i][j] == number:
@@ -57,26 +66,27 @@ def main():
     input_calls = input_array[0].strip()
     array_of_calls = list(map(int, input_calls.split(",")))
 
-    game_boards = []
-    temp_game_board = []
+    array_of_boards = []
+    temp_board = []
 
-    for line in input_array[2:]:
-        if line != '\n':
-            temp_game_board.append(list(map(int, line.split())))
-        else:
-            board = BingoBoard(temp_game_board)
-            game_boards.append(board)
-            temp_game_board = []
+    input_array_index = 2
+    while input_array_index <= len(input_array):
+        for _ in range(5):
+            temp_board.append(list(map(int, input_array[input_array_index].split())))
+            input_array_index += 1
+        input_array_index += 1
+        array_of_boards.append(BingoBoard((temp_board)))
+        temp_board = []
 
-    for n in array_of_calls:
-        for b in game_boards:
-            win = b.number_called(n)
+    for number in array_of_calls:
+        for board in array_of_boards:
+            win = board.call_number(number)
             if win:
-                b.print_board()
-                un_used = b.not_used_spaces_sum()
-                print(f"Summed Spaces {un_used}")
-                print(f"Last called {n}")
-                print(f"Finals score {n * un_used}")
+                board.print_board()
+                not_called = board.sum_not_called()
+                print(f"Summed Spaces {not_called}")
+                print(f"Last called {number}")
+                print(f"Finals score {number * not_called}")
                 return
 
 
