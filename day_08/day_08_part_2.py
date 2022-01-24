@@ -12,114 +12,121 @@ def decode(code:list) -> dict:
     """
     encoding = {}
 
-    segment_1_sure = ""
-    segment_2 = []
-    segment_3_sure = ""
-    segment_3 = []
-    segment_4 = []
-    segment_5 = []
-    segment_6_sure = ""
-    segment_6 = []
-    segment_7 = []
+    segment_1 = ""
+    segment_2 = ""
+    segment_3 = ""
+    segment_4 = ""
+    segment_5 = ""
+    segment_6 = ""
+    segment_7 = ""
+
+    segment_3_or_6 = []
+    segment_2_or_4 = []
+    segment_5_or_7 = []
 
     # find 1 encoding and posable segments
-    for n in code:
-        if len(n) == 2:
-            encoding["".join(sorted(n))] = 1
-            for segment in n:
-                segment_3.append(segment)
-                segment_6.append(segment)
-            code.remove(n)
+    for signal in code:
+        if len(signal) == 2:
+            for segment in signal:
+                segment_3_or_6.append(segment)
+            encoding["".join(sorted(signal))] = 1
+            code.remove(signal)
             break
     # find 4 encoding and posable segments
-    for n in code:
-        if len(n) == 4:
-            for segment in n:
-                if segment not in segment_3 and segment not in segment_6:
-                    segment_2.append(segment)
-                    segment_4.append(segment)
-            encoding["".join(sorted(n))] = 4
-            code.remove(n)
+    for signal in code:
+        if len(signal) == 4:
+            for segment in signal:
+                if segment not in segment_3_or_6:
+                    segment_2_or_4.append(segment)
+            encoding["".join(sorted(signal))] = 4
+            code.remove(signal)
             break
     # find 7 encoding and one segment
-    for n in code:
-        if len(n) == 3:
-            for segment in n:
-                if segment not in segment_3 and segment not in segment_6:
-                    segment_1_sure = segment
-            encoding["".join(sorted(n))] = 7
-            code.remove(n)
+    for signal in code:
+        if len(signal) == 3:
+            for segment in signal:
+                if segment not in segment_3_or_6:
+                    segment_1 = segment
+            encoding["".join(sorted(signal))] = 7
+            code.remove(signal)
             break
     # find 8 encoding and posable segments
-    for n in code:
-        if len(n) == 7:
-            encoding["".join(sorted(n))] = 8
-            for segment in n:
-                if segment not in segment_1_sure \
-                and segment not in segment_2 \
-                and segment not in segment_3 \
-                and segment not in segment_4 \
-                and segment not in segment_6:
-                    segment_5.append(segment)
-                    segment_7.append(segment)
-            code.remove(n)
+    for signal in code:
+        if len(signal) == 7:
+            for segment in signal:
+                if segment not in segment_3_or_6 \
+                and segment not in segment_2_or_4 \
+                and segment != segment_1:
+                    segment_5_or_7.append(segment)
+            encoding["".join(sorted(signal))] = 8
+            code.remove(signal)
             break
     # find 9 encoding
-    for n in code:
-        if len(n) == 6:
-            not_it = False
-            for segment in n:
-                if segment in segment_5:
-                    if not not_it:
-                        break
-                    else:
-                        not_it = True
-                encoding["".join(sorted(n))] = 9
-                code.remove(n)
+    for signal in code:
+        if len(signal) == 6:
+            if segment_5_or_7[0] in signal and segment_5_or_7[1] not in signal:
+                encoding["".join(sorted(signal))] = 9
+                segment_5 = segment_5_or_7[1]
+                segment_7 = segment_5_or_7[0]
+                code.remove(signal)
                 break
-    #find 0 encoding
-    for n in code:
-        if len(n) == 6:
-            not_it = False
-            for segment in n:
-                if segment in segment_4:
-                    if not not_it:
-                        break
-                    else:
-                        not_it = True
-                encoding["".join(sorted(n))] = 0
-                code.remove(n)
+            if segment_5_or_7[1] in signal and segment_5_or_7[0] not in signal:
+                encoding["".join(sorted(signal))] = 9
+                segment_5 = segment_5_or_7[0]
+                segment_7 = segment_5_or_7[1]
+                code.remove(signal)
                 break
-    #find 6 encoding
-    for n in code:
-        if len(n) == 6:
-            not_it = False
-            for segment in n:
-                if segment in segment_3:
-                    if not not_it:
-                        break
-                    else:
-                        not_it = True
-                encoding["".join(sorted(n))] = 6
-                if segment_3[0] in n:
-                    segment_3_sure = segment_3[1]
-                    segment_6_sure = segment_3[0]
-                else:
-                    segment_3_sure = segment_3[0]
-                    segment_6_sure = segment_3[1]
-                code.remove(n)
+    # find 0 encoding
+    for signal in code:
+        if len(signal) == 6:
+            if segment_2_or_4[0] in signal and segment_2_or_4[1] not in signal:
+                encoding["".join(sorted(signal))] = 0
+                segment_2 = segment_2_or_4[0]
+                segment_4 = segment_2_or_4[1]
+                code.remove(signal)
                 break
+            if segment_2_or_4[1] in signal and segment_2_or_4[0] not in signal:
+                encoding["".join(sorted(signal))] = 0
+                segment_2 = segment_2_or_4[1]
+                segment_4 = segment_2_or_4[0]
+                code.remove(signal)
+                break
+    # find 6 encoding
+    for signal in code:
+        if len(signal) == 6:
+            if segment_3_or_6[0] in signal and segment_3_or_6[1] not in signal:
+                encoding["".join(sorted(signal))] = 6
+                segment_3 = segment_3_or_6[1]
+                segment_6 = segment_3_or_6[0]
+                code.remove(signal)
+                break
+            if segment_3_or_6[1] in signal and segment_3_or_6[0] not in signal:
+                encoding["".join(sorted(signal))] = 6
+                segment_3 = segment_3_or_6[0]
+                segment_6 = segment_3_or_6[1]
+                code.remove(signal)
+                break
+    # with all segments know find that last three
+    for signal in code:
+        if segment_1 in signal\
+        and segment_3 in signal\
+        and segment_4 in signal\
+        and segment_5 in signal\
+        and segment_7 in signal:
+            encoding["".join(sorted(signal))] = 2
+        if segment_1 in signal\
+        and segment_3 in signal\
+        and segment_4 in signal\
+        and segment_6 in signal\
+        and segment_7 in signal:
+            encoding["".join(sorted(signal))] = 3
+        if segment_1 in signal\
+        and segment_2 in signal\
+        and segment_4 in signal\
+        and segment_6 in signal\
+        and segment_7 in signal:
+            encoding["".join(sorted(signal))] = 5
 
-    for n in code:
-        if segment_3_sure not in n \
-        and segment_6_sure in n:
-            encoding["".join(sorted(n))] = 5
-        if segment_3_sure in n \
-        and segment_6_sure in n:
-            encoding["".join(sorted(n))] = 3
-        if segment_3_sure in n \
-        and segment_6_sure not in n:
-            encoding["".join(sorted(n))] = 2
 
     return encoding
 
@@ -139,12 +146,14 @@ def main():
         line_coding = line[0:10]
         decoding_dictionary = decode(line_coding)
         output_encoded = line[-4:]
+        working_output_string = ""
         for encoded_number in output_encoded:
             sorted_encoded_number = "".join(sorted(encoded_number))
-            sum_all_outputs += decoding_dictionary[sorted_encoded_number]
+            working_output_string += str(decoding_dictionary[sorted_encoded_number])
+        sum_all_outputs += int(working_output_string)
 
     print(sum_all_outputs)
-    # 3778 too low
+
 
 if __name__ == "__main__":
     main()
