@@ -1,0 +1,46 @@
+START
+
+Initialize variable Input <- data form input file
+Initialize variable Score <- 0
+Initialize variable testStack
+
+FOR EACH Line in Input DO	
+	CLEAR testStack
+	
+	FOR EACH Character in Line DO
+		
+		IF Character == '(' OR Character == '[' OR Character == '{' OR Character == '<'
+			testStack PUSH Character
+
+		IF Character == ')'
+			IF testStack.top != '(' 
+				Increment score by 3
+				BREACK
+			ELSE 
+				POP testStack
+		
+		IF Character == ']'
+			IF squBracketCount != '['
+				Increment score by 57
+				BREACK
+			ELSE 
+				POP testStack
+		
+		IF Character == '}'
+			IF curBracketCount != '{'
+				Increment score by 1197
+				BREACK
+			ELSE 
+				POP testStack
+		
+		IF Character == '>'
+			IF tagBracketCount != '<'
+				Increment score by 25137
+				BREACK
+			ELSE 
+				POP testStack				
+	DONE
+DONE
+				
+RETURN Score
+END
